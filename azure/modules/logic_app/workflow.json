@@ -11,11 +11,11 @@
             "type": "String"
         },
         "connections_azuretables_externalid": {
-            "defaultValue": "/subscriptions/ced99480-ed6e-4fad-a53c-9b105876c522/resourceGroups/demo/providers/Microsoft.Web/connections/azuretables",
+            "defaultValue": "",
             "type": "String"
         },
         "azuretables_api_id": {
-            "defaultValue": "/subscriptions/ced99480-ed6e-4fad-a53c-9b105876c522/providers/Microsoft.Web/locations/eastus/managedApis/azuretables",
+            "defaultValue": "",
             "type": "String"
         }
     },

@@ -1,1 +1,1 @@
-# Azure Terraform Templates
+# Terraform Templates
