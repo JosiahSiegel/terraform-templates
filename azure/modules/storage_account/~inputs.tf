@@ -1,2 +1,2 @@
 variable "common" {}
-variable "logic_app_id" {}
+variable "logic_app" {}
