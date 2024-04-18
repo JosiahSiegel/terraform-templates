@@ -7,27 +7,41 @@
 2. Export an owner object ID to a variable
    * ```sh
      owner_object_id=$(az ad user list --display-name "Joe Smith" --query '[0].id' -o tsv)
-     export TF_VAR_owner_object_id=$owner_object_id
+     export owner_object_id=$owner_object_id
      ```
-3. Create terraform state backend file and storage account
-   * `./.scripts/provision.sh`
-4. Initialize Terraform
+3. Create Terraform state backend file and storage account for a template
+   * `./.scripts/provision_template.sh`
+4. Initialize Terraform using template path (`azure/env/<template>`)
    * `terraform -chdir=azure/env/01 init -reconfigure`
 5. Plan the Terraform deployment
-   * `terraform -chdir=azure/env/01 plan -parallelism=20`
+   * `terraform -chdir=azure/env/01 plan`
 6. Apply the Terraform deployment
-   * `terraform -chdir=azure/env/01 apply -parallelism=20`
+   * `terraform -chdir=azure/env/01 apply`
 7. Destroy the Terraform deployment and terraform storage account
-   * `./scripts/destroy.sh`
+   * `./.scripts/destroy_template.sh`
 
-|Env Template|Resource|Notes|
-|---|---|---|
-|01|API Management|---|
-|01|Logic App|---|
-|01|Key Vault|---|
-|01|Storage Account|---|
-|01|Azure SQL DB|---|
+## Environment resources
+
+### Templates
+<details>
+  <summary>01</summary>
+
+|Azure Resource|Notes|
+|---|---|
+|API Management|Securely share and manage REST endpoints|
+|Logic App|Make database data available via REST endpoint|
+|Data Factory|Ingest APIs and store data in a database and storage account|
+|Key Vault|Manage secrets|
+|Storage Account|Store results from ingested APIs|
+|Azure SQL DB|Store data from ingested APIs and expose via Logic App and API Management|
+</details>
+<details>
+  <summary>02</summary>
+
+Coming soon...
+</details>
 
 ## Tips
 
-1. If login failure, try running `az logout` before `az login`
+1. If login failure during plan or apply, try running `az logout` then `az login`
+2. If you encounter any issues, please check the Terraform state backend and `_override.tf.json` files and storage account created in step 3
