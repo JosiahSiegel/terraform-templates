@@ -2,6 +2,8 @@
 
 ## Quick start
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/JosiahSiegel/terraform-templates)
+
 1. Login to Azure
    * `az login`
 2. Export an owner object ID to a variable
@@ -17,6 +19,7 @@
    * `terraform -chdir=azure/env/01 plan`
 6. Apply the Terraform deployment
    * `terraform -chdir=azure/env/01 apply`
+   * > ⚠️ If "*Login failed for user '\<token-identified principal\>'*", try running `az logout` then `az login`
 7. Destroy the Terraform deployment and terraform storage account
    * `./.scripts/destroy_template.sh`
 
