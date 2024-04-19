@@ -45,10 +45,10 @@ json_file="$env_dir/_override.tf.json"
 check_file "$json_file"
 
 # Read values from the JSON file
-storage_account_name=$(jq -r '.terraform.backend.azurerm.storage_account_name' "$json_file")
-resource_group_name=$(jq -r '.terraform.backend.azurerm.resource_group_name' "$json_file")
-container_name=$(jq -r '.terraform.backend.azurerm.container_name' "$json_file")
-state_file_key=$(jq -r '.terraform.backend.azurerm.key' "$json_file")
+storage_account_name=$(grep -oP '(?<="storage_account_name": ")[^"]*' "$json_file")
+resource_group_name=$(grep -oP '(?<="resource_group_name": ")[^"]*' "$json_file")
+container_name=$(grep -oP '(?<="container_name": ")[^"]*' "$json_file")
+state_file_key=$(grep -oP '(?<="key": ")[^"]*' "$json_file")
 
 # Check if the storage account exists
 if ! az storage account show --name "$storage_account_name" --resource-group "$resource_group_name" >/dev/null 2>&1; then
