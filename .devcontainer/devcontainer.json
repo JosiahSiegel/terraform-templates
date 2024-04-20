@@ -6,12 +6,8 @@
 			"extensions": [
 				"ms-vscode-remote.remote-containers",
 				"github.codespaces",
-				"hashicorp.terraform"
-			]
-		},
-		"codespaces": {
-			"openFiles": [
-				"README.md"
+				"hashicorp.terraform",
+				"stateful.runme"
 			]
 		}
 	}
