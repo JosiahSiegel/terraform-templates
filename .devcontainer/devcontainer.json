@@ -10,5 +10,8 @@
 				"stateful.runme"
 			]
 		}
+	},
+	"otherPortsAttributes": {
+		"onAutoForward": "silent"
 	}
 }
