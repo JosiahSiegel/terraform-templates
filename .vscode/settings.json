@@ -1,0 +1,6 @@
+{
+    "runme.flags.startFile": "./README.md",
+    "remote.otherPortsAttributes": {
+        "onAutoForward": "silent"
+    }
+}
