@@ -17,5 +17,42 @@ locals {
     owner_email    = var.owner_email
     owner          = data.azuread_users.owner.users[0]
   }
+  mssql_instances = {
+    primary = {
+      databases = ["trialdb", "admindb"]
+      epool     = true
+    },
+    secondary = {
+      databases = ["trialdb"]
+      epool     = false
+    },
+    demo = {
+      databases = []
+      epool     = true
+    }
+  }
+  key_vaults = {
+    primary = {
+      secrets = {
+        SqlUsername = {
+          value = "${local.env}admin"
+        }
+        SqlPassword = {
+          value = random_password.sql_password.result
+        }
+        Uid = {
+          value = var.uid
+        }
+      }
+    }
+  }
+  data_factories = {
+    primary = {
+      roles = toset(["Storage Blob Data Contributor", "Key Vault Reader", "Key Vault Secrets User"])
+    }
+    secondary = {
+      roles = toset(["Key Vault Reader", "Key Vault Secrets User"])
+    }
+  }
   dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
 }

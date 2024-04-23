@@ -1,3 +1,3 @@
 variable "common" {}
-variable "secrets" {}
+variable "roles" {}
 variable "key" {}

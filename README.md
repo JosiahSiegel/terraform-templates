@@ -50,7 +50,19 @@ echo "Object Id: $owner_object_id"
 Create the Terraform state backend file and storage account for a template by running the following script:
 
 ```sh {"id":"01HVWMC7W5WGR5QF3H85WFTTP6"}
-./.scripts/provision_template.sh
+source ./.scripts/provision_template.sh
+```
+
+> Optional: set `template_path=azure/env/<template>` if backend already exists:
+
+```sh {"id":"01HW67SE89X56V69ASEFGZB6AX"}
+read -p "Enter the template environment: " template
+export template_path="azure/env/${template:-_}"
+if [ ! -d "$template_path" ]; then
+echo "Error: The specified template directory '$template_path' does not exist."
+else
+echo "Set template environment '$template_path'!"
+fi
 ```
 
 ### 4. Initialize Terraform
@@ -58,7 +70,7 @@ Create the Terraform state backend file and storage account for a template by ru
 Initialize Terraform using the desired template path (`azure/env/<template>`) by running:
 
 ```sh {"id":"01HVWMC7W5WGR5QF3H89NDQK07"}
-terraform -chdir=azure/env/02 init -reconfigure
+terraform -chdir=$template_path init -reconfigure
 ```
 
 Replace 01 with the appropriate template directory.
@@ -68,13 +80,13 @@ Replace 01 with the appropriate template directory.
 Generate an execution plan for the Terraform deployment by running:
 
 ```sh {"id":"01HVWMC7W5WGR5QF3H8BHW8T14"}
-terraform -chdir=azure/env/02 plan
+terraform -chdir=$template_path plan
 ```
 
 ### 6. Apply Terraform Deployment
 
 ```sh {"id":"01HVWMC7W5WGR5QF3H8DQ9WBBE"}
-terraform -chdir=azure/env/01 apply
+terraform -chdir=$template_path apply
 ```
 
 If a login failure occurs with the error "Login failed for user ''", try running `az logout` and then `az login` to resolve the issue.
@@ -100,7 +112,10 @@ If a login failure occurs with the error "Login failed for user ''", try running
 
 ### Template 02
 
-Coming soon...
+|Azure Resource|Purpose|
+|---|---|
+|Key Vault|Manage secrets|
+|Azure SQL DB|Store data|
 
 ## Troubleshooting
 

@@ -9,9 +9,9 @@ terraform {
       source  = "hashicorp/azuread"
       version = "2.48.0"
     }
-    mssql = {
-      source  = "betr-io/mssql"
-      version = "~> 0.3"
+    random = {
+      source  = "hashicorp/random"
+      version = "3.6.1"
     }
     azapi = {
       source  = "Azure/azapi"
@@ -22,7 +22,7 @@ terraform {
 
 provider "azurerm" {
   # This is only required when the User, Service Principal, or Identity running Terraform lacks the permissions to register Azure Resource Providers.
-  skip_provider_registration = true
+  skip_provider_registration = false
   features {
     template_deployment {
       delete_nested_items_during_deletion = true
