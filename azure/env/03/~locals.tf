@@ -17,27 +17,13 @@ locals {
     owner_email    = var.owner_email
     owner          = data.azuread_users.owner.users[0]
   }
-  mssql_instances = {
-    primary = {
-      databases = ["trialdb", "admindb"]
-      epool     = true
-    },
-    secondary = {
-      databases = ["trialdb"]
-      epool     = false
-    },
-    demo = {
-      databases = []
-      epool     = true
-    }
-  }
   key_vaults = {
     primary = {
       secrets = {
-        SqlUsername = {
+        postgresUser = {
           value = "${local.env}admin"
         }
-        SqlPassword = {
+        postgresPass = {
           value = random_password.sql_password.result
         }
         Uid = {
@@ -46,19 +32,47 @@ locals {
       }
     }
   }
-  data_factories = {
-    dev = {
-      roles = toset(["Storage Blob Data Contributor", "Key Vault Reader", "Key Vault Secrets User"])
+  cosmosdb_postgresql = {
+    dev = {}
+  }
+  vnets = {
+    primary = {
+      address_space = {
+        value = ["10.5.0.0/16"]
+      }
+      subnets = {
+        service = {
+          address_prefixes = {
+            value = ["10.5.1.0/24"]
+          }
+          link_service_policies = true
+          endpoint_policies = false
+        }
+        endpoint = {
+          address_prefixes = {
+            value = ["10.5.2.0/24"]
+          }
+          link_service_policies = false
+          endpoint_policies = true
+        }
+      }
     }
-    qa = {
-      roles = toset(["Key Vault Reader", "Key Vault Secrets User"])
+  }
+  dns_zones = {
+    primary = {
+      name = "privatelink.postgreshsc.database.azure.com"
+      vnet_links = {
+        primary = {
+          registration_enabled = false
+          vnet_key = "primary"
+        }
+      }
     }
-    uat = {
-      roles = toset(["Key Vault Reader", "Key Vault Secrets User"])
+  }
+  private_endpoints = {
+    cosmosdb_postgresql = {
     }
-    prod = {
-      roles = toset(["Key Vault Reader", "Key Vault Secrets User"])
-    }
+    
   }
   dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
 }
