@@ -46,33 +46,38 @@ locals {
             value = ["10.5.1.0/24"]
           }
           link_service_policies = true
-          endpoint_policies = false
+          endpoint_policies     = false
         }
         endpoint = {
           address_prefixes = {
             value = ["10.5.2.0/24"]
           }
           link_service_policies = false
-          endpoint_policies = true
+          endpoint_policies     = true
         }
       }
     }
   }
   dns_zones = {
-    primary = {
+    postgreshsc = {
       name = "privatelink.postgreshsc.database.azure.com"
       vnet_links = {
         primary = {
           registration_enabled = false
-          vnet_key = "primary"
+          vnet_key             = "primary"
         }
       }
     }
   }
   private_endpoints = {
     cosmosdb_postgresql = {
+      vnet_key             = "primary"
+      subnet_key           = "endpoint"
+      dns_zone_key         = "privatelink.postgreshsc.database.azure.com"
+      resource_id_key      = "dev"
+      subresource_names    = ["coordinator"]
+      is_manual_connection = false
     }
-    
   }
   dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
 }
