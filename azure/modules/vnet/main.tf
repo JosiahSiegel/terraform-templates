@@ -15,4 +15,8 @@ resource "azurerm_subnet" "default" {
 
   private_link_service_network_policies_enabled = each.value.link_service_policies
   private_endpoint_network_policies_enabled     = each.value.endpoint_policies
+
+  lifecycle {
+    ignore_changes = [service_endpoints]
+  }
 }

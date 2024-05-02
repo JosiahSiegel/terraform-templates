@@ -25,7 +25,7 @@ module "azure_db" {
 }
 
 module "storage_account" {
-  source    = "../../modules/storage_account"
+  source    = "../../modules/storage_account/v1"
   common    = local.common
   logic_app = module.logic_app.ids
 

@@ -79,5 +79,13 @@ locals {
       is_manual_connection = false
     }
   }
+  storage_accounts = {
+    dev = {}
+  }
+  container_apps = {
+    dev = {
+      storage_account_key = "dev"
+    }
+  }
   dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
 }

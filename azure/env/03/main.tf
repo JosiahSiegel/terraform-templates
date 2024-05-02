@@ -67,3 +67,24 @@ module "private_endpoint" {
 
   depends_on = [module.init, module.vnet, module.dns_zone, module.cosmosdb_postgresql]
 }
+
+module "storage_account" {
+  for_each = local.storage_accounts
+
+  source = "../../modules/storage_account/v2"
+  common = local.common
+  key    = each.key
+
+  depends_on = [module.init]
+}
+
+module "container_app" {
+  for_each = local.container_apps
+
+  source          = "../../modules/container_app"
+  common          = local.common
+  key             = each.key
+  storage_account = module.storage_account[each.value.storage_account_key].meta
+
+  depends_on = [module.init, module.storage_account]
+}
