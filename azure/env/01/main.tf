@@ -16,7 +16,7 @@ module "logic_app" {
 }
 
 module "azure_db" {
-  source         = "../../modules/azure_db"
+  source         = "../../modules/azure_mssql/v1"
   common         = local.common
   logic_app_ids  = module.logic_app.ids
   logic_app_name = module.logic_app.name
@@ -25,7 +25,7 @@ module "azure_db" {
 }
 
 module "storage_account" {
-  source    = "../../modules/storage_account"
+  source    = "../../modules/storage_account/v1"
   common    = local.common
   logic_app = module.logic_app.ids
 
@@ -41,18 +41,22 @@ module "api_management" {
 }
 
 module "data_factory" {
-  source          = "../../modules/data_factory"
+  source          = "../../modules/data_factory/v1"
   common          = local.common
   storage_account = module.storage_account.meta
-  key_vault       = module.key_vault.meta
-  secrets         = module.key_vault.secrets
+  key_vault       = module.key_vault["primary"].meta
+  secrets         = module.key_vault["primary"].secrets
 
   depends_on = [module.init]
 }
 
 module "key_vault" {
-  source = "../../modules/key_vault"
-  common = local.common
+  for_each = local.key_vaults
+
+  source  = "../../modules/key_vault"
+  common  = local.common
+  secrets = each.value.secrets
+  key     = each.key
 
   depends_on = [module.init]
 }

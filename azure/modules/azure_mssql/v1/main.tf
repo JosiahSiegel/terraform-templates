@@ -56,15 +56,6 @@ resource "azurerm_mssql_database" "default" {
   }
 }
 
-resource "azuread_directory_role" "db_ad" {
-  display_name = "Directory Readers"
-}
-
-resource "azuread_directory_role_assignment" "db_ad" {
-  role_id             = azuread_directory_role.db_ad.template_id
-  principal_object_id = azurerm_mssql_server.default.identity[0].principal_id
-}
-
 resource "mssql_user" "la" {
   server {
     host = azurerm_mssql_server.default.fully_qualified_domain_name

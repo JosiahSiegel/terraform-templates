@@ -17,5 +17,23 @@ locals {
     owner_email    = var.owner_email
     owner          = data.azuread_users.owner.users[0]
   }
+  key_vaults = {
+    primary = {
+      secrets = {
+        "${local.env}-SECRET" = {
+          value = "PLACEHOLDER_${local.env}-SECRET"
+        }
+        "${local.env}-KEY" = {
+          value = "PLACEHOLDER_${local.env}-KEY"
+        }
+        "${local.env}-API-ENDPOINT" = {
+          value = "PLACEHOLDER_${local.env}-API-ENDPOINT"
+        }
+        "${local.env}-API-URL" = {
+          value = "PLACEHOLDER_${local.env}-API-URL"
+        }
+      }
+    }
+  }
   dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
 }

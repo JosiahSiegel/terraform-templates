@@ -9,14 +9,6 @@ terraform {
       source  = "hashicorp/azuread"
       version = "2.48.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = "3.6.1"
-    }
-    azapi = {
-      source  = "Azure/azapi"
-      version = "1.12.1"
-    }
   }
 }
 

@@ -1,9 +1,5 @@
-locals {
-  secret_names = toset(["${var.common.env}-SECRET", "${var.common.env}-KEY", "${var.common.env}-API-ENDPOINT", "${var.common.env}-API-URL"])
-}
-
 resource "azurerm_key_vault" "default" {
-  name                       = "kv-${var.common.uid}-${var.common.env}"
+  name                       = "kv-${var.common.uid}-${var.common.env}-${var.key}"
   location                   = var.common.location
   resource_group_name        = var.common.resource_group.name
   tenant_id                  = var.common.tenant_id
@@ -14,10 +10,10 @@ resource "azurerm_key_vault" "default" {
 }
 
 resource "azurerm_key_vault_secret" "default" {
-  for_each = toset(local.secret_names)
+  for_each = var.secrets
 
   name         = each.key
-  value        = "PLACEHOLDER_${each.key}_VALUE"
+  value        = each.value.value
   key_vault_id = azurerm_key_vault.default.id
 
   lifecycle {
