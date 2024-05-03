@@ -71,20 +71,31 @@ module "private_endpoint" {
 module "storage_account" {
   for_each = local.storage_accounts
 
-  source = "../../modules/storage_account/v2"
-  common = local.common
-  key    = each.key
+  source       = "../../modules/storage_account/v2"
+  common       = local.common
+  key          = each.key
+  account_tier = each.value.account_tier
+  account_kind = each.value.account_kind
 
   depends_on = [module.init]
 }
 
-module "container_app" {
-  for_each = local.container_apps
+module "container_instance" {
+  for_each = local.container_instances
 
-  source          = "../../modules/container_app"
+  source          = "../../modules/container_instance"
   common          = local.common
   key             = each.key
   storage_account = module.storage_account[each.value.storage_account_key].meta
+  image           = each.value.image
+  cpu_cores       = each.value.cpu_cores
+  mem_gb          = each.value.mem_gb
+  share_gb        = each.value.share_gb
+  share_tier      = each.value.share_tier
 
-  depends_on = [module.init, module.storage_account]
+  depends_on = [module.init, module.storage_account, module.vnet, module.key_vault]
+}
+
+output "cinst_exec" {
+  value = module.container_instance[*]
 }

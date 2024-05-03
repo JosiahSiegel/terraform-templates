@@ -1,7 +1,8 @@
 resource "azurerm_storage_share" "default" {
   name                 = "cinst-share-${var.key}"
-  quota                = "200"
+  quota                = var.share_gb
   storage_account_name = var.storage_account.name
+  access_tier          = var.share_tier
 }
 
 resource "azurerm_container_group" "default" {
@@ -13,9 +14,9 @@ resource "azurerm_container_group" "default" {
 
   container {
     name   = "cinst-${var.key}"
-    image  = "mcr.microsoft.com/azure-dev-cli-apps:latest"
-    cpu    = 1.0
-    memory = 2.0
+    image  = var.image
+    cpu    = var.cpu_cores
+    memory = var.mem_gb
     commands = [
       "/bin/bash",
       "-c",
@@ -32,6 +33,13 @@ resource "azurerm_container_group" "default" {
       share_name           = azurerm_storage_share.default.name
       read_only            = false
       mount_path           = "/mnt/storage"
+    }
+    volume {
+      name = "repo"
+      git_repo {
+        url = "https://github.com/JosiahSiegel/terraform-templates.git"
+      }
+      mount_path = "/app"
     }
   }
 }

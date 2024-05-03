@@ -126,3 +126,9 @@ If a login failure occurs with the error "Login failed for user ''", try running
 ## Contributing
 
 Feel free to submit pull requests or open issues if you have any suggestions or improvements for these Terraform templates.
+
+### Bonus
+
+```sh {"id":"01HWY6JGNS1CTNGATQE5KMKNCR"}
+az container exec --name cinst-dev --resource-group demo --container-name cinst-dev --exec-command "/bin/bash"
+```

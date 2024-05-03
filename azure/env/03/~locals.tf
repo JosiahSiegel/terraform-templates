@@ -80,12 +80,20 @@ locals {
     }
   }
   storage_accounts = {
-    dev = {}
-  }
-  container_apps = {
     dev = {
-      storage_account_key = "dev"
+      account_tier = "Premium"     //Standard, Premium
+      account_kind = "FileStorage" //StorageV2, FileStorage, BlockBlobStorage, BlobStorage
     }
   }
-  dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
+  container_instances = {
+    dev = {
+      storage_account_key = "dev"
+      image               = "mcr.microsoft.com/azure-dev-cli-apps:latest"
+      cpu_cores           = 2
+      mem_gb              = 4
+      share_gb            = 2000
+      share_tier          = "Premium" //TransactionOptimized, Premium, Hot, Cool
+    }
+  }
+  dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator", "Storage File Data Privileged Contributor", "Storage File Data SMB Share Elevated Contributor"])
 }
