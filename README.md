@@ -117,6 +117,30 @@ If a login failure occurs with the error "Login failed for user ''", try running
 |Key Vault|Manage secrets|
 |Azure SQL DB|Store data|
 
+### Template 03
+
+|Azure Resource|Purpose|
+|---|---|
+|CosmosDB for PostgreSQL||
+|VNet|Private network|
+|Private Endpoint|CosmosDB traffic over vnet|
+|Key Vault|CosmosDB password|
+|Container Instance|Run DB backup/restore to file share|
+|Storage Account|File share storage for container instance|
+
+### Template 04
+
+|Azure Resource|Purpose|
+|---|---|
+pending...||
+
+### Template 05
+
+|Azure Resource|Purpose|
+|---|---|
+|Container Instance|Linux VM with file share mount|
+|Storage Account|File share storage for container instance|
+
 ## Troubleshooting
 
 1. If login failure during plan or apply, try running `az logout` then `az login`
