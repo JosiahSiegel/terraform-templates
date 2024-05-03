@@ -11,6 +11,7 @@ module "storage_account" {
   common       = local.common
   key          = each.key
   account_tier = each.value.account_tier
+  account_kind = each.value.account_kind
 
   depends_on = [module.init]
 }
