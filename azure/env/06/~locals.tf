@@ -26,14 +26,14 @@ locals {
   container_instances = {
     dev = {
       storage_account_key = "dev"
-      os_type             = "Linux"
-      image               = "mcr.microsoft.com/azure-dev-cli-apps:latest"
+      os_type             = "Windows"
+      image               = "mcr.microsoft.com/windows/server:ltsc2022-amd64"
       cpu_cores           = 2
       mem_gb              = 4
-      commands            = ["/bin/bash", "-c", "sleep infinity"]
-      exec                = "/bin/bash"
-      shares              = { storage = { mount_path = "/mnt/storage", gb = 500, tier = "Premium" } } //TransactionOptimized, Premium, Hot, Cool
-      repos               = { terraform-templates = { url = "https://github.com/JosiahSiegel/terraform-templates.git", mount_path = "/app" } }
+      commands            = []
+      exec                = ""
+      shares              = {}
+      repos               = {}
     }
   }
   dev_roles = toset(["Contributor", "Storage File Data Privileged Contributor", "Storage File Data SMB Share Elevated Contributor"])
