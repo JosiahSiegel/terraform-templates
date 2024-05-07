@@ -61,7 +61,7 @@ module "private_endpoint" {
   subresource_names    = each.value.subresource_names
   is_manual_connection = each.value.is_manual_connection
 
-  subnet_id    = lookup({ for subnet in lookup({ for vnet in module.vnet : vnet.meta.name => vnet.meta.subnet }, "vnet-${each.value.vnet_key}", "") : subnet.name => subnet.id }, each.value.subnet_key, "")
+  subnet_id    = lookup({ for subnet in module.vnet[each.value.vnet_key].subnets : subnet.name => subnet.id }, each.value.subnet_key, "")
   dns_zone_ids = [lookup({ for zone in module.dns_zone : zone.meta.name => zone.meta.id }, each.value.dns_zone_key, "")]
   resource_id  = lookup({ for psql in module.cosmosdb_postgresql : psql.meta.name => psql.meta.id }, "cluster-${local.common.uid}-${local.common.env}-${each.value.resource_id_key}", "")
 
