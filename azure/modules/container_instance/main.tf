@@ -42,7 +42,10 @@ resource "azurerm_container_group" "default" {
       content {
         name       = volume.key
         mount_path = volume.value.mount_path
-        git_repo { url = volume.value.url }
+        git_repo {
+          url       = volume.value.url
+          directory = "/"
+        }
       }
     }
   }

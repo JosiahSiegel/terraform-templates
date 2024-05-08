@@ -14,5 +14,5 @@ resource "random_password" "sql_password" {
   special = false
   upper   = true
   lower   = true
-  numeric  = true
+  numeric = true
 }
