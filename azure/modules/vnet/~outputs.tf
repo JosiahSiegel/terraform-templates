@@ -7,5 +7,5 @@ output "meta" {
 }
 
 output "subnets" {
-  value = azurerm_virtual_network.default.subnet
+  value = azurerm_subnet.default
 }
