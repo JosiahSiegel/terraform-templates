@@ -88,11 +88,14 @@ locals {
   container_instances = {
     dev = {
       storage_account_key = "dev"
+      os_type             = "Linux"
       image               = "mcr.microsoft.com/azure-dev-cli-apps:latest"
-      cpu_cores           = 2
-      mem_gb              = 4
-      share_gb            = 2000
-      share_tier          = "Premium" //TransactionOptimized, Premium, Hot, Cool
+      cpu_cores           = 4
+      mem_gb              = 16
+      commands            = ["/bin/bash", "-c", "sleep infinity"]
+      exec                = "/bin/bash"
+      shares              = { storage = { mount_path = "/mnt/storage", gb = 1000, tier = "Premium" } } //TransactionOptimized, Premium, Hot, Cool
+      repos               = { terraform-templates = { url = "https://github.com/JosiahSiegel/terraform-templates.git", mount_path = "/app/repo1" }, so2pg = { url = "https://github.com/JosiahSiegel/stackoverflow_in_pg.git", mount_path = "/app/repo2" } }
     }
   }
   dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator", "Storage File Data Privileged Contributor", "Storage File Data SMB Share Elevated Contributor"])

@@ -4,7 +4,18 @@ variable "storage_account" {}
 variable "image" {}
 variable "cpu_cores" {}
 variable "mem_gb" {}
-variable "share_gb" {}
-variable "share_tier" {
-  default = "TransactionOptimized"
+variable "commands" {
+  default = []
+}
+variable "exec" {
+  default = ""
+}
+variable "repos" {
+  default = {}
+}
+variable "shares" {
+  default = {}
+}
+variable "os_type" {
+  default = "Linux"
 }

@@ -8,11 +8,3 @@ data "azurerm_resource_group" "default" {
 
 data "azurerm_subscription" "default" {
 }
-
-resource "random_password" "sql_password" {
-  length  = 16
-  special = false
-  upper   = true
-  lower   = true
-  numeric = true
-}

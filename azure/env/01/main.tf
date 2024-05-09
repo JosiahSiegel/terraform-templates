@@ -1,5 +1,5 @@
 module "init" {
-  source    = "../../modules/init"
+  source    = "../../modules/init/v1"
   common    = local.common
   dev_roles = local.dev_roles
 }

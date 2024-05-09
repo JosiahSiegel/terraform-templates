@@ -156,7 +156,7 @@ Feel free to submit pull requests or open issues if you have any suggestions or 
 Run scripts and enter terminal for container instance
 
 ```sh {"id":"01HWZY6RPNNYHM0MN1F6MF9QZB"}
-az container exec --name cinst-dev --resource-group demo --container-name cinst-dev --exec-command "/bin/bash -c /app/terraform-templates/.scripts/psql_16.sh"
+az container exec --name cinst-dev --resource-group demo --container-name cinst-dev --exec-command "/bin/bash -c /app/repo1/terraform-templates/.scripts/utils/psql_install_16.sh"
 ```
 
 ```sh {"id":"01HWY6JGNS1CTNGATQE5KMKNCR"}
