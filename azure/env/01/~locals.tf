@@ -35,5 +35,5 @@ locals {
       }
     }
   }
-  dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
+  dev_roles = ["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"]
 }

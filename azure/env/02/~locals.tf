@@ -60,5 +60,5 @@ locals {
       roles = toset(["Key Vault Reader", "Key Vault Secrets User"])
     }
   }
-  dev_roles = toset(["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"])
+  dev_roles = ["Contributor", "Storage Table Data Contributor", "Storage Blob Data Contributor", "Key Vault Administrator"]
 }

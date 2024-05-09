@@ -1,6 +1,8 @@
 variable "common" {}
 variable "key" {}
-variable "storage_account" {}
+variable "storage_account" {
+  default = null
+}
 variable "image" {}
 variable "cpu_cores" {}
 variable "mem_gb" {}

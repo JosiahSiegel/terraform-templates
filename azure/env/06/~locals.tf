@@ -18,23 +18,18 @@ locals {
     owner          = data.azuread_users.owner.users[0]
   }
   storage_accounts = {
-    dev = {
-      account_tier = "Premium"     //Standard, Premium
-      account_kind = "FileStorage" //StorageV2, FileStorage, BlockBlobStorage, BlobStorage
-    }
   }
   container_instances = {
-    dev = {
-      storage_account_key = "dev"
-      os_type             = "Windows"
-      image               = "mcr.microsoft.com/windows/server:ltsc2022-amd64"
-      cpu_cores           = 2
-      mem_gb              = 4
-      commands            = []
-      exec                = ""
-      shares              = {}
-      repos               = {}
+    windev = {
+      os_type   = "Windows"
+      image     = "mcr.microsoft.com/windows:1809"
+      cpu_cores = 2
+      mem_gb    = 4
+      commands  = ["cmd.exe", "/c", "ping -t localhost > NUL"]
+      exec      = ""
+      shares    = {}
+      repos     = {}
     }
   }
-  dev_roles = toset(["Contributor", "Storage File Data Privileged Contributor", "Storage File Data SMB Share Elevated Contributor"])
+  dev_roles = []
 }
