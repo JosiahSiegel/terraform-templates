@@ -138,8 +138,14 @@ pending...||
 
 |Azure Resource|Purpose|
 |---|---|
-|Container Instance|Linux VM with file share mount|
+|Container Instance|Linux container with file share mount|
 |Storage Account|File share storage for container instance|
+
+### Template 06
+
+|Azure Resource|Purpose|
+|---|---|
+|Container Instance|Windows container|
 
 ## Troubleshooting
 
