@@ -20,8 +20,13 @@ resource "azurerm_container_group" "default" {
     cpu      = var.cpu_cores
     memory   = var.mem_gb
     commands = var.commands
+
+    secure_environment_variables = {
+      USER_PASSWORD = var.user_password
+    }
+
     ports {
-      port     = 22
+      port     = 2222
       protocol = "TCP"
     }
 

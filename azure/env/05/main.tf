@@ -31,6 +31,7 @@ module "container_instance" {
   repos           = each.value.repos
   exec            = each.value.exec
   os_type         = each.value.os_type
+  user_password   = each.value.user_password
 
   depends_on = [module.init, module.storage_account]
 }
