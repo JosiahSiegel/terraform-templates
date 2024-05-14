@@ -19,3 +19,7 @@ variable "shares" {
 variable "os_type" {
   default = "Linux"
 }
+variable "user_password" {
+  sensitive = true
+  default   = null
+}
