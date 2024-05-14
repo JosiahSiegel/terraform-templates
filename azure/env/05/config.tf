@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/azuread"
       version = "2.48.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "3.6.1"
+    }
   }
 }
 
