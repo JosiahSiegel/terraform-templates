@@ -13,6 +13,7 @@ resource "azurerm_container_group" "default" {
   resource_group_name = var.common.resource_group.name
   ip_address_type     = "Public"
   os_type             = var.os_type
+  dns_name_label      = "cinst-${var.key}"
 
   container {
     name     = "cinst-${var.key}"

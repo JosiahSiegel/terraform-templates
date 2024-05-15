@@ -18,22 +18,22 @@ locals {
     owner          = data.azuread_users.owner.users[0]
   }
   storage_accounts = {
-    dev = {
-      account_tier = "Premium"     //Standard, Premium
-      account_kind = "FileStorage" //StorageV2, FileStorage, BlockBlobStorage, BlobStorage
+    standard = {
+      account_tier = "Standard"  //Standard, Premium
+      account_kind = "StorageV2" //StorageV2, FileStorage, BlockBlobStorage, BlobStorage
     }
   }
   container_instances = {
-    dev = {
-      storage_account_key = "dev"
+    standard = {
+      storage_account_key = "standard"
       os_type             = "Linux"
       image               = "ghcr.io/josiahsiegel/dev-image:latest"
-      cpu_cores           = 2
+      cpu_cores           = 4
       mem_gb              = 8
       commands            = []
       exec                = "/bin/bash"
-      shares              = { storage = { mount_path = "/mnt/storage", gb = 500, tier = "Premium" } } //TransactionOptimized, Premium, Hot, Cool
-      repos               = { terraform-templates = { url = "https://github.com/JosiahSiegel/terraform-templates.git", mount_path = "/app/repo1" }, so2pg = { url = "https://github.com/JosiahSiegel/stackoverflow_in_pg.git", mount_path = "/app/repo2" } }
+      shares              = { storage = { mount_path = "/mnt/storage", gb = 500, tier = "TransactionOptimized" } } //TransactionOptimized, Premium, Hot, Cool
+      repos               = { terraform-templates = { url = "https://github.com/JosiahSiegel/terraform-templates.git", mount_path = "/mnt/storage/repo1" } }
       user_password       = random_password.user_password.result
     }
   }
