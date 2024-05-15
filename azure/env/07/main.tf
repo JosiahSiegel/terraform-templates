@@ -5,10 +5,12 @@ module "init" {
 }
 
 module "azure_ad" {
-  source    = "../../modules/azure_ad"
+  source = "../../modules/azure_ad/v2"
+
   common    = local.common
-  key       = local.azure_ad.key
-  domain_name = local.azure_ad.domain_name
+  active_directory_domain_name  = "${local.azure_ad.key}.local"
+  active_directory_netbios_name = local.azure_ad.key
+  prefix                        = local.azure_ad.key
 
   depends_on = [module.init]
 }
@@ -21,7 +23,9 @@ module "mssql_vm" {
   common    = local.common
   key       = each.key
   ad_dns_ips = module.azure_ad.dns_ips
-  domain_name = local.azure_ad.domain_name
+  domain_name = "${local.azure_ad.key}.local"
+  ad_username = module.azure_ad.domain_admin_username
+  ad_password = module.azure_ad.domain_admin_password
 
-  depends_on = [module.init]
+  depends_on = [module.init, module.azure_ad]
 }

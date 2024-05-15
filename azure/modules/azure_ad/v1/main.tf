@@ -102,6 +102,7 @@ resource "azurerm_active_directory_domain_service" "aadds" {
   name                = "aadds"
   location            = azurerm_resource_group.aadds.location
   resource_group_name = azurerm_resource_group.aadds.name
+  domain_configuration_type = "FullySynced"
 
   domain_name           = var.domain_name
   sku                   = "Standard"

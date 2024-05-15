@@ -1,6 +1,14 @@
+data "http" "icanhazip" {
+  url = "http://icanhazip.com"
+}
+
+locals {
+  public_ip = chomp(data.http.icanhazip.response_body)
+}
+
 resource "azurerm_virtual_network" "example" {
   name                = "${var.key}-VN"
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["10.1.0.0/16"]
   location            = var.common.location
   resource_group_name = var.common.resource_group.name
 
@@ -17,7 +25,7 @@ resource "azurerm_subnet" "example" {
   name                 = "${var.key}-SN"
   resource_group_name  = var.common.resource_group.name
   virtual_network_name = azurerm_virtual_network.example.name
-  address_prefixes     = ["10.0.0.0/24"]
+  address_prefixes     = ["10.1.0.0/24"]
 }
 
 /*resource "azurerm_subnet_network_security_group_association" "example" {
@@ -61,7 +69,7 @@ resource "azurerm_network_security_rule" "RDPRule" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = 3389
-  source_address_prefix       = "167.220.255.0/25"
+  source_address_prefix       = "${local.public_ip}"
   destination_address_prefix  = "*"
   network_security_group_name = azurerm_network_security_group.example.name
 }
@@ -75,7 +83,7 @@ resource "azurerm_network_security_rule" "MSSQLRule" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = 1433
-  source_address_prefix       = "167.220.255.0/25"
+  source_address_prefix       = "${local.public_ip}"
   destination_address_prefix  = "*"
   network_security_group_name = azurerm_network_security_group.example.name
 }
@@ -102,45 +110,79 @@ resource "azurerm_network_interface_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.example.id
 }
 
-resource "azurerm_virtual_machine" "example" {
+resource "azurerm_windows_virtual_machine" "example" {
   for_each = toset([ "vm1", "vm2" ])
 
   name                  = "${var.key}-${each.key}-VM"
   location              = var.common.location
   resource_group_name   = var.common.resource_group.name
   network_interface_ids = [azurerm_network_interface.example[each.key].id]
-  vm_size               = "Standard_B2s"
+  size               = "Standard_B2s"
+  provision_vm_agent       = true
+  enable_automatic_updates = true
 
-  # Uncomment this line to delete the OS disk automatically when deleting the VM
-  delete_os_disk_on_termination = true
-
-  # Uncomment this line to delete the data disks automatically when deleting the VM
-  delete_data_disks_on_termination = true
-  storage_image_reference {
+  admin_username = "exampleadmin"
+  admin_password = "Password1234!"
+  
+  source_image_reference {
     publisher = "MicrosoftSQLServer"
     offer     = "SQL2022-WS2022" #"SQL2017-WS2016"
     sku       = "sqldev-gen2" #"SQLDEV"
     version   = "latest"
   }
 
-  storage_os_disk {
+  os_disk {
     name              = "${var.key}-${each.key}-OSDisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
   }
 
-  os_profile {
-    computer_name  = "winhost01"
-    admin_username = "exampleadmin"
-    admin_password = "Password1234!"
-  }
+}
 
-  os_profile_windows_config {
-    timezone                  = "Eastern Standard Time"
-    provision_vm_agent        = true
-    enable_automatic_upgrades = true
+// Waits for up to 1 hour for the Domain to become available. Will return an error 1 if unsuccessful preventing the member attempting to join.
+// todo - find out why this is so variable? (approx 40min during testing)
+
+resource "azurerm_virtual_machine_extension" "wait-for-domain-to-provision" {
+  for_each = toset([ "vm1", "vm2" ])
+
+  name                 = "TestConnectionDomain"
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.9"
+  virtual_machine_id   = azurerm_windows_virtual_machine.example[each.key].id
+  settings             = <<SETTINGS
+  {
+    "commandToExecute": "powershell.exe -Command \"while (!(Test-Connection -ComputerName ${var.domain_name} -Count 1 -Quiet) -and ($retryCount++ -le 360)) { Start-Sleep 10 } \""
   }
+SETTINGS
+}
+
+resource "azurerm_virtual_machine_extension" "join-domain" {
+  for_each = toset([ "vm1", "vm2" ])
+
+  name                 = azurerm_windows_virtual_machine.example[each.key].name
+  publisher            = "Microsoft.Compute"
+  type                 = "JsonADDomainExtension"
+  type_handler_version = "1.3"
+  virtual_machine_id   = azurerm_windows_virtual_machine.example[each.key].id
+
+  settings = <<SETTINGS
+    {
+        "Name": "${var.domain_name}",
+        "OUPath": "",
+        "User": "${var.ad_username}@${var.domain_name}",
+        "Restart": "true",
+        "Options": "3"
+    }
+SETTINGS
+
+  protected_settings = <<SETTINGS
+    {
+        "Password": "${var.ad_password}"
+    }
+SETTINGS
+
+  depends_on = [azurerm_virtual_machine_extension.wait-for-domain-to-provision]
 }
 
 resource "azurerm_mssql_virtual_machine_group" "example" {
@@ -163,7 +205,7 @@ resource "azurerm_mssql_virtual_machine_group" "example" {
 resource "azurerm_mssql_virtual_machine" "example" {
   for_each = toset([ "vm1", "vm2" ])
 
-  virtual_machine_id           = azurerm_virtual_machine.example[each.key].id
+  virtual_machine_id           = azurerm_windows_virtual_machine.example[each.key].id
   sql_license_type             = "PAYG"
   sql_virtual_machine_group_id = azurerm_mssql_virtual_machine_group.example.id
 
@@ -172,6 +214,8 @@ resource "azurerm_mssql_virtual_machine" "example" {
     cluster_operator_account_password  = "P@ssw0rd1234!"
     sql_service_account_password       = "P@ssw0rd1234!"
   }
+
+  depends_on = [ azurerm_virtual_machine_extension.join-domain ]
 }
 
 resource "azurerm_mssql_virtual_machine_availability_group_listener" "example" {
@@ -182,7 +226,7 @@ resource "azurerm_mssql_virtual_machine_availability_group_listener" "example" {
 
   load_balancer_configuration {
     load_balancer_id   = azurerm_lb.example.id
-    private_ip_address = "10.0.0.11"
+    private_ip_address = "10.1.0.11"
     probe_port         = 51572
     subnet_id          = azurerm_subnet.example.id
 
