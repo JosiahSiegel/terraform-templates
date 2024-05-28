@@ -159,7 +159,7 @@ Feel free to submit pull requests or open issues if you have any suggestions or 
 
 ### Bonus
 
-Run scripts and enter terminal for container instance
+ * Run scripts and enter terminal for container instance
 
 ```sh {"id":"01HWZY6RPNNYHM0MN1F6MF9QZB"}
 az container exec --name cinst-dev --resource-group demo --container-name cinst-dev --exec-command "/bin/bash -c /app/repo1/terraform-templates/.scripts/utils/psql_install_16.sh"
@@ -167,4 +167,10 @@ az container exec --name cinst-dev --resource-group demo --container-name cinst-
 
 ```sh {"id":"01HWY6JGNS1CTNGATQE5KMKNCR"}
 az container exec --name cinst-dev --resource-group demo --container-name cinst-dev --exec-command "/bin/bash"
+```
+
+* Add existing public SSH key to container instance
+
+```sh
+ssh-copy-id -p 2222 -i ~/.ssh/id_ed25519.pub app@cinst-dev.eastus.azurecontainer.io
 ```
